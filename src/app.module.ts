@@ -1,19 +1,21 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MapsModule } from './maps/maps.module';
+import ormConfig from './orm.config';
+import ormConfigProd from './orm.config.prod';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'Azumi',
-      password: '153411*',
-      database: 'map_saber',
-      entities: [],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [ormConfig],
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory:
+        process.env.NODE_ENV !== 'production' ? ormConfig : ormConfigProd,
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -21,6 +23,8 @@ import { MapsModule } from './maps/maps.module';
       introspection: true,
     }),
     MapsModule,
+    UsersModule,
   ],
+  controllers: [],
 })
 export class AppModule {}

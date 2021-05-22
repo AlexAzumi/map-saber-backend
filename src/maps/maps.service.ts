@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Difficulty } from 'src/enums/difficulty.enum';
 // Inputs
 import { CreateMapInput } from './dto/create-map.input';
 import { UpdateMapInput } from './dto/update-map.input';
@@ -17,7 +18,24 @@ export class MapsService {
 
   findOne(id: number): Map {
     return {
-      exampleField: 1,
+      id: 1,
+      title: 'Beatiful Song',
+      artist: 'Keiichi Okabe',
+      duration: 5000,
+      likes: 69,
+      difficulties: [
+        Difficulty.NORMAL,
+        Difficulty.EXTREME,
+        Difficulty.EXTREME_PLUS,
+      ],
+      author: {
+        id: 1,
+        username: 'AlexAzumi',
+        email: 'alejandro-hdez115@outlook.com',
+        password: 'xd',
+        creationDate: new Date(),
+        createdMaps: [],
+      },
     };
   }
 
