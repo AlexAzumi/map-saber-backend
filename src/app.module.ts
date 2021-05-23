@@ -22,6 +22,7 @@ import { UsersModule } from './users/users.module';
       playground: true,
       introspection: true,
     }),
+
     MapsModule,
     UsersModule,
   ],

@@ -3,14 +3,16 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { UserToken } from './entities/user-token.entity';
+import { LoginUserInput } from './dto/login-user.input';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+  signUp(@Args('data') data: CreateUserInput): Promise<UserToken> {
+    return this.usersService.create(data);
   }
 
   @Query(() => [User], { name: 'users' })
@@ -24,12 +26,19 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
+  updateUser(@Args('data') data: UpdateUserInput) {
+    return this.usersService.update(data.id, data);
   }
 
   @Mutation(() => User)
   removeUser(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.remove(id);
+  }
+
+  @Mutation(() => UserToken)
+  login(
+    @Args('data', { type: () => LoginUserInput }) data: LoginUserInput,
+  ): Promise<UserToken> {
+    return this.usersService.login(data);
   }
 }
