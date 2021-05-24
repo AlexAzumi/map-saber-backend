@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -71,7 +72,13 @@ export class UsersService {
    * Retreives a users data searched by their ID
    */
   async findOne(id: number): Promise<User> {
-    return await this.userRepository.findOne(id);
+    const foundUser = await this.userRepository.findOne(id);
+
+    if (!foundUser) {
+      throw new NotFoundException(['Usert not found']);
+    }
+
+    return foundUser;
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {

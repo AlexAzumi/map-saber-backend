@@ -31,7 +31,13 @@ export class DifficultiesService {
    * Finds a difficulty by its ID
    */
   async findOne(id: number): Promise<Difficulty> {
-    return this.difficultyRepository.findOne(id);
+    const foundDifficulty = await this.difficultyRepository.findOne(id);
+
+    if (!foundDifficulty) {
+      throw new NotFoundException(['Difficulty not found']);
+    }
+
+    return foundDifficulty;
   }
 
   /**
