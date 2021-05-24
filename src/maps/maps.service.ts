@@ -24,6 +24,19 @@ export class MapsService {
   ) {}
 
   /**
+   * Gets a map information
+   */
+  async getMap(id: number): Promise<Map> {
+    const foundMap = await this.mapRepository.findOne(id);
+
+    if (!foundMap) {
+      throw new NotFoundException(['Not found map']);
+    }
+
+    return foundMap;
+  }
+
+  /**
    * Gets and returns all the maps that a user has created
    */
   async getUserMaps(id: number): Promise<Map[]> {
