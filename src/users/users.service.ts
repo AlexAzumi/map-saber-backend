@@ -5,13 +5,17 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isSamePassword, hashPassword } from 'src/helpers/hashPassword.helper';
 import { Repository } from 'typeorm';
+// Helpers
+import { isSamePassword, hashPassword } from '../helpers/hashPassword.helper';
+// Inputs
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+// Entities
 import { UserToken } from './entities/user-token.entity';
 import { User } from './entities/user.entity';
+// Models
 import { JwtPayload } from './models/jwt-payload.model';
 
 @Injectable()

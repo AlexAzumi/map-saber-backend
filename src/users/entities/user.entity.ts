@@ -1,4 +1,10 @@
-import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  ID,
+  GraphQLISODateTime,
+  Int,
+} from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -6,6 +12,8 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+// Enums
+import { Role } from '../../enums/role.enum';
 // Entities
 import { Map } from '../../maps/entities/map.entity';
 
@@ -36,4 +44,8 @@ export class User {
   @Field(() => [Map], { description: 'Maps created by the user' })
   @OneToMany(() => Map, (map) => map.author, { eager: true })
   createdMaps?: Map[];
+
+  @Field(() => Role, { description: 'User authentication role' })
+  @Column({ default: 0 })
+  role?: Role;
 }
