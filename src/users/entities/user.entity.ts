@@ -1,10 +1,4 @@
-import {
-  ObjectType,
-  Field,
-  ID,
-  GraphQLISODateTime,
-  Int,
-} from '@nestjs/graphql';
+import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -42,7 +36,7 @@ export class User {
   creationDate: Date;
 
   @Field(() => [Map], { description: 'Maps created by the user' })
-  @OneToMany(() => Map, (map) => map.author, { eager: true })
+  @OneToMany(() => Map, (map) => map.author)
   createdMaps?: Map[];
 
   @Field(() => Role, { description: 'User authentication role' })

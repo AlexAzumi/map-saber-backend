@@ -3,15 +3,12 @@ import { DifficultiesService } from './difficulties.service';
 import { Difficulty } from './entities/difficulty.entity';
 import { CreateDifficultyInput } from './dto/create-difficulty.input';
 import { UpdateDifficultyInput } from './dto/update-difficulty.input';
+import { UseGuards } from '@nestjs/common';
+import { GQLAuthGuard } from '../users/jwt-auth.guard';
 
 @Resolver(() => Difficulty)
 export class DifficultiesResolver {
   constructor(private readonly difficultiesService: DifficultiesService) {}
-
-  @Mutation(() => Difficulty)
-  createDifficulty(@Args('createDifficultyInput') createDifficultyInput: CreateDifficultyInput) {
-    return this.difficultiesService.create(createDifficultyInput);
-  }
 
   @Query(() => [Difficulty], { name: 'difficulties' })
   findAll() {
@@ -23,13 +20,17 @@ export class DifficultiesResolver {
     return this.difficultiesService.findOne(id);
   }
 
+  @UseGuards(GQLAuthGuard)
   @Mutation(() => Difficulty)
-  updateDifficulty(@Args('updateDifficultyInput') updateDifficultyInput: UpdateDifficultyInput) {
-    return this.difficultiesService.update(updateDifficultyInput.id, updateDifficultyInput);
+  createDifficulty(
+    @Args('data') data: CreateDifficultyInput,
+  ): Promise<Difficulty> {
+    return this.difficultiesService.create(data);
   }
 
+  @UseGuards(GQLAuthGuard)
   @Mutation(() => Difficulty)
-  removeDifficulty(@Args('id', { type: () => Int }) id: number) {
-    return this.difficultiesService.remove(id);
+  updateDifficulty(@Args('updateDifficultyInput') data: UpdateDifficultyInput) {
+    return this.difficultiesService.update(data.id, data);
   }
 }

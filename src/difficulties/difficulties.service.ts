@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateDifficultyInput } from './dto/create-difficulty.input';
 import { UpdateDifficultyInput } from './dto/update-difficulty.input';
+import { Difficulty } from './entities/difficulty.entity';
 
 @Injectable()
 export class DifficultiesService {
-  create(createDifficultyInput: CreateDifficultyInput) {
-    return 'This action adds a new difficulty';
+  constructor(
+    @InjectRepository(Difficulty)
+    private readonly difficultyRepository: Repository<Difficulty>,
+  ) {}
+  /**
+   * Adds a new difficulty to the database
+   */
+  async create(data: CreateDifficultyInput): Promise<Difficulty> {
+    return await this.difficultyRepository.save({
+      name: data.name,
+    });
   }
 
-  findAll() {
-    return `This action returns all difficulties`;
+  /**
+   * Returns all the available difficulties
+   */
+  async findAll(): Promise<Difficulty[]> {
+    return await this.difficultyRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} difficulty`;
+  /**
+   * Finds a difficulty by its ID
+   */
+  async findOne(id: number): Promise<Difficulty> {
+    return this.difficultyRepository.findOne(id);
   }
 
-  update(id: number, updateDifficultyInput: UpdateDifficultyInput) {
-    return `This action updates a #${id} difficulty`;
-  }
+  /**
+   * Updates a difficulty name
+   */
+  async update(id: number, data: UpdateDifficultyInput) {
+    const difficulty = this.difficultyRepository.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} difficulty`;
+    if (!difficulty) {
+      throw new NotFoundException(['Difficulty not found']);
+    }
+
+    return await this.difficultyRepository.update(
+      {
+        id,
+      },
+      {
+        name: data.name,
+      },
+    );
   }
 }

@@ -1,8 +1,11 @@
 import { CreateDifficultyInput } from './create-difficulty.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateDifficultyInput extends PartialType(CreateDifficultyInput) {
-  @Field(() => Int)
+  @Field(() => ID, { description: 'Difficulty unique ID' })
   id: number;
+
+  @Field(() => String, { description: 'Difficulty name' })
+  name: string;
 }

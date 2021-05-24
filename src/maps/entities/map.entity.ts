@@ -32,11 +32,13 @@ export class Map {
   @Field(() => [Difficulty], {
     description: 'Available difficulties for the map',
   })
-  @ManyToMany(() => Difficulty, (difficulty) => difficulty.maps)
+  @ManyToMany(() => Difficulty, (difficulty) => difficulty.maps, {
+    eager: true,
+  })
   difficulties: Difficulty[];
 
   @Field(() => User, { description: 'Creator of the map' })
-  @ManyToOne(() => User, (user) => user.createdMaps)
+  @ManyToOne(() => User, (user) => user.createdMaps, { eager: true })
   author: User;
 
   @Field(() => MapStatus, {
