@@ -13,11 +13,6 @@ import { CtxUser } from './decorators/ctx-user.context';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  signUp(@Args('data') data: CreateUserInput): Promise<UserToken> {
-    return this.usersService.create(data);
-  }
-
   @Query(() => [User], { name: 'users' })
   findAll() {
     return this.usersService.findAll();
@@ -28,14 +23,10 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
 
-  @Mutation(() => User)
-  updateUser(@Args('data') data: UpdateUserInput) {
-    return this.usersService.update(data.id, data);
-  }
-
-  @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
+  @UseGuards(GQLAuthGuard)
+  @Query(() => User)
+  verifyToken(@CtxUser() user: User) {
+    return user;
   }
 
   @Mutation(() => UserToken)
@@ -45,9 +36,18 @@ export class UsersResolver {
     return this.usersService.login(data);
   }
 
-  @UseGuards(GQLAuthGuard)
-  @Query(() => User)
-  verifyToken(@CtxUser() user: User) {
-    return user;
+  @Mutation(() => User)
+  signUp(@Args('data') data: CreateUserInput): Promise<UserToken> {
+    return this.usersService.create(data);
+  }
+
+  @Mutation(() => User)
+  updateUser(@Args('data') data: UpdateUserInput) {
+    return this.usersService.update(data.id, data);
+  }
+
+  @Mutation(() => User)
+  removeUser(@Args('id', { type: () => Int }) id: number) {
+    return this.usersService.remove(id);
   }
 }
