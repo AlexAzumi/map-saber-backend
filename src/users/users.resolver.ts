@@ -7,7 +7,7 @@ import { UserToken } from './entities/user-token.entity';
 import { LoginUserInput } from './dto/login-user.input';
 import { UseGuards } from '@nestjs/common';
 import { GQLAuthGuard } from './jwt-auth.guard';
-import { CtxUser } from './decorators/ctx-user.context';
+import { CtxUser } from './decorators/ctx-user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {

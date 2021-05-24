@@ -6,7 +6,7 @@ import { UpdateMapInput } from './dto/update-map.input';
 import { UseGuards } from '@nestjs/common';
 import { GQLAuthGuard } from 'src/users/jwt-auth.guard';
 import { User } from '../users/entities/user.entity';
-import { CtxUser } from '../users/decorators/ctx-user.context';
+import { CtxUser } from '../users/decorators/ctx-user.decorator';
 
 @Resolver(() => Map)
 export class MapsResolver {
