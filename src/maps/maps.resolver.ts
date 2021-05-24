@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { MapsService } from './maps.service';
 import { Map } from './entities/map.entity';
 import { CreateMapInput } from './dto/create-map.input';
@@ -25,8 +25,17 @@ export class MapsResolver {
 
   @UseGuards(GQLAuthGuard)
   @Mutation(() => Map)
-  submitMap(@CtxUser() user: User, @Args('data') data: CreateMapInput) {
+  submitMap(
+    @CtxUser() user: User,
+    @Args('data') data: CreateMapInput,
+  ): Promise<Map> {
     return this.mapsService.submitMap(user, data);
+  }
+
+  @UseGuards(GQLAuthGuard)
+  @Mutation(() => Map)
+  deleteMap(@CtxUser() user: User, @Args('id') id: number): Promise<Map> {
+    return this.mapsService.deleteMap(user, id);
   }
 
   // @Mutation(() => Map)

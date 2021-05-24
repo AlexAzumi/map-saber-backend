@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Difficulty } from '../difficulties/entities/difficulty.entity';
@@ -53,38 +58,24 @@ export class MapsService {
     return await this.mapRepository.save(newMap);
   }
 
-  // create(createMapInput: CreateMapInput) {
-  //   return 'This action adds a new map';
-  // }
-  // findAll(): Map[] {
-  //   return [];
-  // }
-  // findOne(id: number): Map {
-  //   return {
-  //     id: 1,
-  //     title: 'Beatiful Song',
-  //     artist: 'Keiichi Okabe',
-  //     duration: 5000,
-  //     likes: 69,
-  //     difficulties: [
-  //       Difficulty.NORMAL,
-  //       Difficulty.EXTREME,
-  //       Difficulty.EXTREME_PLUS,
-  //     ],
-  //     author: {
-  //       id: 1,
-  //       username: 'AlexAzumi',
-  //       email: 'alejandro-hdez115@outlook.com',
-  //       password: 'xd',
-  //       creationDate: new Date(),
-  //       createdMaps: [],
-  //     },
-  //   };
-  // }
-  // update(id: number, updateMapInput: UpdateMapInput) {
-  //   return `This action updates a #${id} map`;
-  // }
-  // remove(id: number) {
-  //   return `This action removes a #${id} map`;
-  // }
+  /**
+   * Deletes a map from database
+   * Note: Only the map creator can delete it (ADMINS will have the permission too later)
+   */
+  async deleteMap(requestedBy: User, id: number): Promise<Map> {
+    const map = await this.mapRepository.findOne(id);
+
+    if (!map) {
+      throw new NotFoundException(['Map not found']);
+    } else if (map.author['id'] !== requestedBy.id) {
+      throw new UnauthorizedException();
+    }
+
+    const deletedMap = await this.mapRepository.remove(map);
+
+    return {
+      ...deletedMap,
+      id,
+    };
+  }
 }
