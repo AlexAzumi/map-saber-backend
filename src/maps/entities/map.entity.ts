@@ -1,5 +1,12 @@
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 // Enums
 import { MapStatus } from '../../enums/map-status.enum';
 // Entities
@@ -9,7 +16,7 @@ import { Difficulty } from '../../difficulties/entities/difficulty.entity';
 @Entity('maps')
 @ObjectType()
 export class Map {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('increment')
   @Field(() => ID, { description: 'Map unique identifier' })
   id: number;
 
@@ -35,11 +42,12 @@ export class Map {
   @ManyToMany(() => Difficulty, (difficulty) => difficulty.maps, {
     eager: true,
   })
+  @JoinTable()
   difficulties: Difficulty[];
 
   @Field(() => User, { description: 'Creator of the map' })
   @ManyToOne(() => User, (user) => user.createdMaps, { eager: true })
-  author: User;
+  author: User | number;
 
   @Field(() => MapStatus, {
     description: 'Map status: RANKED, QUALIFIED or UNRANKED',

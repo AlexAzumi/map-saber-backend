@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Difficulty } from '../difficulties/entities/difficulty.entity';
+import { MapStatus } from '../enums/map-status.enum';
+import { User } from '../users/entities/user.entity';
 // Inputs
 import { CreateMapInput } from './dto/create-map.input';
 import { UpdateMapInput } from './dto/update-map.input';
@@ -11,6 +14,8 @@ import { Map } from './entities/map.entity';
 export class MapsService {
   constructor(
     @InjectRepository(Map) private readonly mapRepository: Repository<Map>,
+    @InjectRepository(Difficulty)
+    private readonly difficultyRepository: Repository<Difficulty>,
   ) {}
 
   /**
@@ -26,7 +31,27 @@ export class MapsService {
     });
   }
 
-  async submitMap() {}
+  /**
+   * Saves a new map in database
+   */
+  async submitMap(author: User, data: CreateMapInput): Promise<Map> {
+    const difficulties = await this.difficultyRepository.findByIds(
+      data.difficulties,
+    );
+
+    if (difficulties.length != data.difficulties.length) {
+      throw new BadRequestException(['Invalid difficulties']);
+    }
+
+    const newMap = {
+      ...data,
+      author: author.id,
+      status: MapStatus.UNRANKED,
+      difficulties,
+    };
+
+    return await this.mapRepository.save(newMap);
+  }
 
   // create(createMapInput: CreateMapInput) {
   //   return 'This action adds a new map';

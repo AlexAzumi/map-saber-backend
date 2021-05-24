@@ -23,8 +23,11 @@ export class MapsResolver {
     return this.mapsService.getUserMaps(user.id);
   }
 
+  @UseGuards(GQLAuthGuard)
   @Mutation(() => Map)
-  submitMap(@CtxUser() user: User, @Args('data') data: CreateMapInput) {}
+  submitMap(@CtxUser() user: User, @Args('data') data: CreateMapInput) {
+    return this.mapsService.submitMap(user, data);
+  }
 
   // @Mutation(() => Map)
   // createMap(@Args('createMapInput') createMapInput: CreateMapInput) {
