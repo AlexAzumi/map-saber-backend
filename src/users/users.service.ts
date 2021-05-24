@@ -93,7 +93,7 @@ export class UsersService {
     }
 
     if (!(await isSamePassword(data.password, user.password))) {
-      throw new UnauthorizedException(['Invalid credentials']);
+      throw new UnauthorizedException();
     }
 
     const payload: JwtPayload = {

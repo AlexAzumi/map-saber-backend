@@ -5,6 +5,9 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserToken } from './entities/user-token.entity';
 import { LoginUserInput } from './dto/login-user.input';
+import { UseGuards } from '@nestjs/common';
+import { GQLAuthGuard } from './jwt-auth.guard';
+import { CtxUser } from './decorators/ctx-user.context';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -40,5 +43,11 @@ export class UsersResolver {
     @Args('data', { type: () => LoginUserInput }) data: LoginUserInput,
   ): Promise<UserToken> {
     return this.usersService.login(data);
+  }
+
+  @UseGuards(GQLAuthGuard)
+  @Query(() => User)
+  verifyToken(@CtxUser() user: User) {
+    return user;
   }
 }

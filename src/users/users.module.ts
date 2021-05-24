@@ -4,6 +4,8 @@ import { UsersResolver } from './users.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
+import { GQLAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
@@ -17,6 +19,6 @@ import { JwtModule } from '@nestjs/jwt';
       }),
     }),
   ],
-  providers: [UsersResolver, UsersService],
+  providers: [UsersResolver, UsersService, JwtStrategy, GQLAuthGuard],
 })
 export class UsersModule {}
