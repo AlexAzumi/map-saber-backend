@@ -6,6 +6,7 @@ import { MapsModule } from './maps/maps.module';
 import ormConfig from './orm.config';
 import ormConfigProd from './orm.config.prod';
 import { UsersModule } from './users/users.module';
+import { DifficultiesModule } from './difficulties/difficulties.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
 
     MapsModule,
     UsersModule,
+    DifficultiesModule,
   ],
   controllers: [],
 })

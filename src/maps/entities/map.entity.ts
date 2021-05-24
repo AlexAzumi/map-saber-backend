@@ -1,15 +1,16 @@
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from 'typeorm';
 // Enums
-import { Difficulty } from '../../enums/difficulty.enum';
+import { MapStatus } from '../../enums/map-status.enum';
 // Entities
 import { User } from '../../users/entities/user.entity';
+import { Difficulty } from '../../difficulties/entities/difficulty.entity';
 
 @Entity('maps')
 @ObjectType()
 export class Map {
   @PrimaryColumn()
-  @Field(() => ID)
+  @Field(() => ID, { description: 'Map unique identifier' })
   id: number;
 
   @Field(() => String, { description: 'Title of the song' })
@@ -25,16 +26,22 @@ export class Map {
   duration: number;
 
   @Field(() => Int, { description: 'Amount of likes given by the users' })
-  @Column()
+  @Column({ default: 0 })
   likes: number;
 
   @Field(() => [Difficulty], {
-    description: 'Available difficulties on the map',
+    description: 'Available difficulties for the map',
   })
-  @Column({ type: 'varchar' })
+  @ManyToMany(() => Difficulty, (difficulty) => difficulty.maps)
   difficulties: Difficulty[];
 
   @Field(() => User, { description: 'Creator of the map' })
   @ManyToOne(() => User, (user) => user.createdMaps)
   author: User;
+
+  @Field(() => MapStatus, {
+    description: 'Map status: RANKED, QUALIFIED or UNRANKED',
+  })
+  @Column({ type: 'smallint' })
+  status: MapStatus;
 }

@@ -2,7 +2,6 @@ import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
 import {
   Column,
   Entity,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
